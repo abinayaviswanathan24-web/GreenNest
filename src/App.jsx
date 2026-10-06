@@ -125,29 +125,28 @@ import broccoliSeed from "./assets/seeds/broccoli.png"
 import cabbageSeed from "./assets/seeds/cabbage.png"
 import chilliSeed from "./assets/seeds/chilli.png"
 
+
 function App() {
 
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [searchText, setSearchText] = useState("")
   const [cart, setCart] = useState([])
-    const [apiProducts, setApiProducts] = useState([])
+
+  const [apiProducts, setApiProducts] = useState([])
   const [apiLoading, setApiLoading] = useState(true)
   const [apiError, setApiError] = useState("")
+
   const [showCart, setShowCart] = useState(false)
   const [showCheckout, setShowCheckout] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
-
-  
 
   // =========================
   // LOGIN STATES
   // =========================
 
   const [showLogin, setShowLogin] = useState(false)
-
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
-
   const [loginError, setLoginError] = useState("")
 
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -157,29 +156,46 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState(
     localStorage.getItem("greennestUser") || ""
   )
-    // =========================
+
+
+  // =========================
   // REST API
   // =========================
 
   useEffect(() => {
-  fetch("http://localhost:8080/products")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch GreenNest products")
-      }
 
-      return response.json()
-    })
-    .then((data) => {
-      setApiProducts(data)
-      setApiLoading(false)
-    })
-    .catch((error) => {
-      console.error("GreenNest API Error:", error)
-      setApiError("Unable to load GreenNest products.")
-      setApiLoading(false)
-    })
-}, [])
+    fetch("http://localhost:8080/products")
+
+      .then((response) => {
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch GreenNest products")
+        }
+
+        return response.json()
+      })
+
+      .then((data) => {
+
+        console.log("GreenNest API Products:", data)
+
+        setApiProducts(data)
+        setApiLoading(false)
+
+      })
+
+      .catch((error) => {
+
+        console.error("GreenNest API Error:", error)
+
+        setApiError("Unable to load GreenNest products.")
+        setApiLoading(false)
+
+      })
+
+  }, [])
+
+
   // =========================
   // LOGIN FUNCTION
   // =========================
@@ -208,7 +224,6 @@ function App() {
       return
     }
 
-    // Frontend demo login
     localStorage.setItem(
       "greennestLoggedIn",
       "true"
@@ -773,35 +788,117 @@ function App() {
     ...seedProducts
   ]
 
-  const getApiProductImage = (imageName) => {
-  const imageMap = {
-    "rose.jpg": rose,
-    "moneyplant.jpeg": moneyPlant,
-    "snakeplant.jpeg": snakePlant,
-     "hibiscus.jpg": hibiscus,
-    "tomato.jpg": tomato,
-    "cactus.jpeg": cactusPlantImage,
+
+  // =========================
+  // API PRODUCT IMAGE
+  // =========================
+  // Backend-la image name different extension-la
+  // irundhaalum correct frontend image-a return pannum.
+
+  const getApiProductImage = (imageName, productName) => {
+
+    const imageMap = {
+
+      // Flowers
+      "rose.jpg": rose,
+      "rose.jpeg": rose,
+      "rose.webp": rose,
+
+      "hibiscus.jpg": hibiscus,
+      "hibiscus.jpeg": hibiscus,
+      "hibiscus.webp": hibiscus,
+
+      // Indoor
+      "moneyplant.jpg": moneyPlant,
+      "moneyplant.jpeg": moneyPlant,
+      "moneyplant.webp": moneyPlant,
+
+      "snakeplant.jpg": snakePlant,
+      "snakeplant.jpeg": snakePlant,
+      "snakeplant.webp": snakePlant,
+
+      // Vegetable
+      "tomato.jpg": tomato,
+      "tomato.jpeg": tomato,
+      "tomato.webp": tomato,
+
+      // Cactus
+      "cactus.jpg": cactusPlantImage,
+      "cactus.jpeg": cactusPlantImage,
+      "cactus.webp": cactusPlantImage
+
+    }
+
+
+    // First image filename check
+    if (imageName) {
+
+      const cleanImageName = imageName
+        .trim()
+        .toLowerCase()
+
+      if (imageMap[cleanImageName]) {
+        return imageMap[cleanImageName]
+      }
+
+    }
+
+
+    // Product name fallback
+    if (productName) {
+
+      const cleanProductName = productName
+        .trim()
+        .toLowerCase()
+
+      if (cleanProductName.includes("rose")) {
+        return rose
+      }
+
+      if (cleanProductName.includes("hibiscus")) {
+        return hibiscus
+      }
+
+      if (cleanProductName.includes("money")) {
+        return moneyPlant
+      }
+
+      if (cleanProductName.includes("snake")) {
+        return snakePlant
+      }
+
+      if (cleanProductName.includes("tomato")) {
+        return tomato
+      }
+
+      if (cleanProductName.includes("cactus")) {
+        return cactusPlantImage
+      }
+
+    }
+
+
+    return ""
   }
 
-  return imageMap[imageName] || ""
-}
 
   // =========================
   // SEARCH
   // =========================
 
- const combinedProducts = [
-  ...allProducts,
-  ...apiProducts
-]
+  const combinedProducts = [
+    ...allProducts,
+    ...apiProducts
+  ]
 
-const searchResults = searchText.trim()
-  ? combinedProducts.filter((product) =>
-      product.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
-    )
-  : []
+
+  const searchResults = searchText.trim()
+    ? combinedProducts.filter((product) =>
+        product.name
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase())
+      )
+    : []
 
 
   // =========================
@@ -816,6 +913,7 @@ const searchResults = searchText.trim()
         (item) => item.name === product.name
       )
 
+
       if (existingProduct) {
 
         return currentCart.map((item) =>
@@ -828,6 +926,7 @@ const searchResults = searchText.trim()
         )
 
       }
+
 
       return [
         ...currentCart,
@@ -976,11 +1075,13 @@ const searchResults = searchText.trim()
     let subtitle = ""
     let title = ""
 
+
     if (selectedCategory === "flowers") {
       products = flowerProducts
       subtitle = "FLOWER PLANTS"
       title = "Explore Our Flower Collection"
     }
+
 
     if (selectedCategory === "vegetables") {
       products = vegetableProducts
@@ -988,11 +1089,13 @@ const searchResults = searchText.trim()
       title = "Explore Our Vegetable Collection"
     }
 
+
     if (selectedCategory === "fruits") {
       products = fruitProducts
       subtitle = "FRUIT PLANTS"
       title = "Explore Our Fruit Collection"
     }
+
 
     if (selectedCategory === "herbs") {
       products = herbProducts
@@ -1000,11 +1103,13 @@ const searchResults = searchText.trim()
       title = "Choose Your Herb Plant"
     }
 
+
     if (selectedCategory === "decor") {
       products = decorProducts
       subtitle = "DECOR PLANTS"
       title = "Choose Your Indoor Plant"
     }
+
 
     if (selectedCategory === "cactus") {
       products = cactusProducts
@@ -1012,11 +1117,13 @@ const searchResults = searchText.trim()
       title = "Explore Our Cactus Collection"
     }
 
+
     if (selectedCategory === "seeds") {
       products = seedProducts
       subtitle = "GREENNEST SEEDS"
       title = "Grow Your Garden From Seeds"
     }
+
 
     if (selectedCategory === "gardenkit") {
       products = gardenKitProducts
@@ -1024,9 +1131,11 @@ const searchResults = searchText.trim()
       title = "Pots & Gardening Essentials"
     }
 
+
     if (!products.length) {
       return null
     }
+
 
     return (
 
@@ -1043,6 +1152,7 @@ const searchResults = searchText.trim()
           </h2>
 
         </div>
+
 
         <div className="category-products-container">
 
@@ -1078,11 +1188,14 @@ const searchResults = searchText.trim()
         <div
           className="logo"
           onClick={() => {
+
             setSelectedCategory(null)
+
             window.scrollTo({
               top: 0,
               behavior: "smooth"
             })
+
           }}
         >
           🌱 GreenNest
@@ -1094,43 +1207,59 @@ const searchResults = searchText.trim()
           <a
             href="#"
             onClick={(e) => {
+
               e.preventDefault()
+
               setSelectedCategory(null)
+
               window.scrollTo({
                 top: 0,
                 behavior: "smooth"
               })
+
             }}
           >
             Home
           </a>
 
+
           <a
             href="#categories"
-            onClick={() => setSelectedCategory(null)}
+            onClick={() =>
+              setSelectedCategory(null)
+            }
           >
             Plants
           </a>
 
+
           <a
             href="#"
             onClick={(e) => {
+
               e.preventDefault()
+
               openCategory("seeds")
+
             }}
           >
             Seeds
           </a>
 
+
           <a
             href="#"
             onClick={(e) => {
+
               e.preventDefault()
+
               openCategory("gardenkit")
+
             }}
           >
             Garden Kit
           </a>
+
 
           <a href="#offers">
             Offers
@@ -1159,28 +1288,29 @@ const searchResults = searchText.trim()
         </div>
 
 
-        {/* =========================
-            NAV ICONS
-        ========================= */}
+        {/* NAV ICONS */}
 
         <div className="nav-icons">
 
           <button
             className="cart-icon"
-            onClick={() => setShowCart(true)}
+            onClick={() =>
+              setShowCart(true)
+            }
           >
+
             🛒
 
             {cartCount > 0 && (
+
               <span className="cart-count">
                 {cartCount}
               </span>
+
             )}
 
           </button>
 
-
-          {/* LOGIN / USER */}
 
           <button
             className="user-icon-button"
@@ -1200,7 +1330,9 @@ const searchResults = searchText.trim()
             }
           >
 
-            {isLoggedIn ? "👋" : "👤"}
+            {isLoggedIn
+              ? "👋"
+              : "👤"}
 
           </button>
 
@@ -1247,25 +1379,30 @@ const searchResults = searchText.trim()
             </h2>
 
             <button
-              onClick={() => setSearchText("")}
+              onClick={() =>
+                setSearchText("")
+              }
             >
               ✕
             </button>
 
           </div>
 
+
           {searchResults.length > 0 ? (
 
             <div className="search-results-grid">
 
-              {searchResults.map((product, index) => (
+              {searchResults.map(
+                (product, index) => (
 
-                <ProductCard
-                  product={product}
-                  key={index}
-                />
+                  <ProductCard
+                    product={product}
+                    key={index}
+                  />
 
-              ))}
+                )
+              )}
 
             </div>
 
@@ -1352,6 +1489,7 @@ const searchResults = searchText.trim()
           <span>🚚</span>
 
           <div>
+
             <h3>
               Free Delivery
             </h3>
@@ -1359,6 +1497,7 @@ const searchResults = searchText.trim()
             <p>
               On orders above ₹500
             </p>
+
           </div>
 
         </div>
@@ -1369,6 +1508,7 @@ const searchResults = searchText.trim()
           <span>🎁</span>
 
           <div>
+
             <h3>
               Free Gifts
             </h3>
@@ -1376,6 +1516,7 @@ const searchResults = searchText.trim()
             <p>
               Special gifts with selected plants
             </p>
+
           </div>
 
         </div>
@@ -1386,6 +1527,7 @@ const searchResults = searchText.trim()
           <span>🌱</span>
 
           <div>
+
             <h3>
               Healthy Plants
             </h3>
@@ -1393,6 +1535,7 @@ const searchResults = searchText.trim()
             <p>
               Carefully selected plants
             </p>
+
           </div>
 
         </div>
@@ -1403,6 +1546,7 @@ const searchResults = searchText.trim()
           <span>🇮🇳</span>
 
           <div>
+
             <h3>
               All India Delivery
             </h3>
@@ -1410,6 +1554,7 @@ const searchResults = searchText.trim()
             <p>
               We deliver across India
             </p>
+
           </div>
 
         </div>
@@ -1444,7 +1589,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("flowers")}
+            onClick={() =>
+              openCategory("flowers")
+            }
           >
 
             <div className="category-icon">
@@ -1466,8 +1613,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("flowers")
+
               }}
             >
               Explore
@@ -1478,7 +1628,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("vegetables")}
+            onClick={() =>
+              openCategory("vegetables")
+            }
           >
 
             <div className="category-icon">
@@ -1500,8 +1652,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("vegetables")
+
               }}
             >
               Explore
@@ -1512,7 +1667,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("fruits")}
+            onClick={() =>
+              openCategory("fruits")
+            }
           >
 
             <div className="category-icon">
@@ -1534,8 +1691,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("fruits")
+
               }}
             >
               Explore
@@ -1546,7 +1706,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("herbs")}
+            onClick={() =>
+              openCategory("herbs")
+            }
           >
 
             <div className="category-icon">
@@ -1568,8 +1730,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("herbs")
+
               }}
             >
               Explore
@@ -1580,7 +1745,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("decor")}
+            onClick={() =>
+              openCategory("decor")
+            }
           >
 
             <div className="category-icon">
@@ -1602,8 +1769,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("decor")
+
               }}
             >
               Explore
@@ -1614,7 +1784,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("seeds")}
+            onClick={() =>
+              openCategory("seeds")
+            }
           >
 
             <div className="category-icon">
@@ -1636,8 +1808,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("seeds")
+
               }}
             >
               Explore
@@ -1648,7 +1823,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("cactus")}
+            onClick={() =>
+              openCategory("cactus")
+            }
           >
 
             <div className="category-icon">
@@ -1670,8 +1847,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("cactus")
+
               }}
             >
               Explore
@@ -1682,7 +1862,9 @@ const searchResults = searchText.trim()
 
           <div
             className="category-card"
-            onClick={() => openCategory("gardenkit")}
+            onClick={() =>
+              openCategory("gardenkit")
+            }
           >
 
             <div className="category-icon">
@@ -1704,8 +1886,11 @@ const searchResults = searchText.trim()
 
             <button
               onClick={(e) => {
+
                 e.stopPropagation()
+
                 openCategory("gardenkit")
+
               }}
             >
               Explore
@@ -1735,65 +1920,143 @@ const searchResults = searchText.trim()
 
       )}
 
-{/* =========================
-    REST API PRODUCTS
-========================= */}
 
-<section className="products-section">
+      {/* =========================
+          REST API PRODUCTS
+          NEW ARRIVALS
+      ========================= */}
 
-  <div className="section-title">
-  <p>GREENNEST COLLECTION</p>
-  <h2>New Arrivals </h2>
-</div>
+      <section className="products-section">
 
-  {apiLoading && (
-    <p style={{ textAlign: "center" }}>
-      Loading products...
-    </p>
-  )}
+        <div className="section-title">
 
-  {apiError && (
-    <p style={{ textAlign: "center", color: "red" }}>
-      {apiError}
-    </p>
-  )}
+          <p>
+            GREENNEST COLLECTION
+          </p>
 
-  {!apiLoading && !apiError && (
-    <div className="products-container">
-      {apiProducts.slice(0, 8).map((product, index) => (
-        <div className="product-card" key={index}>
-
-          <div className="product-image">
-            <img
-  src={getApiProductImage(product.image)}
-  alt={product.name}
-/>
-          </div>
-
-          <div className="product-info">
-
-            <h3>{product.name}</h3>
-
-            <p>{product.description}</p>
-
-            <div className="product-price">
-              <span>₹{product.price}</span>
-            </div>
-
-            <button
-              onClick={() => addToCart(product)}
-            >
-              Add to Cart
-            </button>
-
-          </div>
+          <h2>
+            New Arrivals
+          </h2>
 
         </div>
-      ))}
-    </div>
-  )}
 
-</section>
+
+        {apiLoading && (
+
+          <p style={{ textAlign: "center" }}>
+            Loading products...
+          </p>
+
+        )}
+
+
+        {apiError && (
+
+          <p
+            style={{
+              textAlign: "center",
+              color: "red"
+            }}
+          >
+            {apiError}
+          </p>
+
+        )}
+
+
+        {!apiLoading && !apiError && (
+
+          <div className="products-container">
+
+            {apiProducts
+              .slice(0, 8)
+              .map((product, index) => {
+
+                const productImage =
+                  getApiProductImage(
+                    product.image,
+                    product.name
+                  )
+
+                return (
+
+                  <div
+                    className="product-card"
+                    key={product.id || index}
+                  >
+
+                    <div className="product-image">
+
+                      {productImage ? (
+
+                        <img
+                          src={productImage}
+                          alt={product.name}
+                        />
+
+                      ) : (
+
+                        <div
+                          style={{
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "50px"
+                          }}
+                        >
+                          🌱
+                        </div>
+
+                      )}
+
+                    </div>
+
+
+                    <div className="product-info">
+
+                      <h3>
+                        {product.name}
+                      </h3>
+
+                      <p>
+                        {product.description}
+                      </p>
+
+                      <div className="product-price">
+
+                        <span>
+                          ₹{product.price}
+                        </span>
+
+                      </div>
+
+
+                      <button
+                        onClick={() =>
+                          addToCart({
+                            ...product,
+                            image: productImage
+                          })
+                        }
+                      >
+                        Add to Cart
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+
+              })}
+
+          </div>
+
+        )}
+
+      </section>
+
 
       {/* =========================
           TRENDING PLANTS
@@ -1817,6 +2080,8 @@ const searchResults = searchText.trim()
         <div className="products-container">
 
 
+          {/* MONEY PLANT */}
+
           <div className="product-card">
 
             <div className="product-image">
@@ -1827,6 +2092,7 @@ const searchResults = searchText.trim()
               />
 
             </div>
+
 
             <div className="product-info">
 
@@ -1850,6 +2116,7 @@ const searchResults = searchText.trim()
 
               </div>
 
+
               <button
                 onClick={() =>
                   addToCart({
@@ -1868,6 +2135,8 @@ const searchResults = searchText.trim()
           </div>
 
 
+          {/* SNAKE PLANT */}
+
           <div className="product-card">
 
             <div className="product-image">
@@ -1878,6 +2147,7 @@ const searchResults = searchText.trim()
               />
 
             </div>
+
 
             <div className="product-info">
 
@@ -1901,6 +2171,7 @@ const searchResults = searchText.trim()
 
               </div>
 
+
               <button
                 onClick={() =>
                   addToCart({
@@ -1919,6 +2190,8 @@ const searchResults = searchText.trim()
           </div>
 
 
+          {/* MULTI ROSE */}
+
           <div className="product-card">
 
             <div className="product-image">
@@ -1929,6 +2202,7 @@ const searchResults = searchText.trim()
               />
 
             </div>
+
 
             <div className="product-info">
 
@@ -1952,6 +2226,7 @@ const searchResults = searchText.trim()
 
               </div>
 
+
               <button
                 onClick={() =>
                   addToCart({
@@ -1970,6 +2245,8 @@ const searchResults = searchText.trim()
           </div>
 
 
+          {/* CACTUS */}
+
           <div className="product-card">
 
             <div className="product-image">
@@ -1980,6 +2257,7 @@ const searchResults = searchText.trim()
               />
 
             </div>
+
 
             <div className="product-info">
 
@@ -2002,6 +2280,7 @@ const searchResults = searchText.trim()
                 </del>
 
               </div>
+
 
               <button
                 onClick={() =>
@@ -2081,7 +2360,9 @@ const searchResults = searchText.trim()
               </p>
 
               <button
-                onClick={() => openCategory("flowers")}
+                onClick={() =>
+                  openCategory("flowers")
+                }
               >
                 Shop Plants →
               </button>
@@ -2202,6 +2483,7 @@ const searchResults = searchText.trim()
 
         </div>
 
+
         <button
           onClick={() =>
             document
@@ -2268,19 +2550,35 @@ const searchResults = searchText.trim()
             Categories
           </h3>
 
-          <button onClick={() => openCategory("flowers")}>
+          <button
+            onClick={() =>
+              openCategory("flowers")
+            }
+          >
             Flower Plants
           </button>
 
-          <button onClick={() => openCategory("vegetables")}>
+          <button
+            onClick={() =>
+              openCategory("vegetables")
+            }
+          >
             Vegetable Plants
           </button>
 
-          <button onClick={() => openCategory("fruits")}>
+          <button
+            onClick={() =>
+              openCategory("fruits")
+            }
+          >
             Fruit Plants
           </button>
 
-          <button onClick={() => openCategory("seeds")}>
+          <button
+            onClick={() =>
+              openCategory("seeds")
+            }
+          >
             Seeds
           </button>
 
@@ -2325,12 +2623,16 @@ const searchResults = searchText.trim()
 
         <div
           className="cart-overlay"
-          onClick={() => setShowCart(false)}
+          onClick={() =>
+            setShowCart(false)
+          }
         >
 
           <div
             className="cart-drawer"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) =>
+              e.stopPropagation()
+            }
           >
 
             <div className="cart-header">
@@ -2340,7 +2642,9 @@ const searchResults = searchText.trim()
               </h2>
 
               <button
-                onClick={() => setShowCart(false)}
+                onClick={() =>
+                  setShowCart(false)
+                }
               >
                 ✕
               </button>
@@ -2366,6 +2670,7 @@ const searchResults = searchText.trim()
 
                 <button
                   onClick={() => {
+
                     setShowCart(false)
 
                     document
@@ -2399,6 +2704,7 @@ const searchResults = searchText.trim()
                         alt={item.name}
                       />
 
+
                       <div className="cart-item-info">
 
                         <h3>
@@ -2409,11 +2715,14 @@ const searchResults = searchText.trim()
                           ₹{item.price}
                         </p>
 
+
                         <div className="quantity-control">
 
                           <button
                             onClick={() =>
-                              decreaseQuantity(item.name)
+                              decreaseQuantity(
+                                item.name
+                              )
                             }
                           >
                             −
@@ -2425,7 +2734,9 @@ const searchResults = searchText.trim()
 
                           <button
                             onClick={() =>
-                              increaseQuantity(item.name)
+                              increaseQuantity(
+                                item.name
+                              )
                             }
                           >
                             +
@@ -2435,10 +2746,13 @@ const searchResults = searchText.trim()
 
                       </div>
 
+
                       <button
                         className="remove-cart"
                         onClick={() =>
-                          removeFromCart(item.name)
+                          removeFromCart(
+                            item.name
+                          )
                         }
                       >
                         🗑️
@@ -2465,6 +2779,7 @@ const searchResults = searchText.trim()
 
                   </div>
 
+
                   <div className="summary-row">
 
                     <span>
@@ -2478,6 +2793,7 @@ const searchResults = searchText.trim()
                     </strong>
 
                   </div>
+
 
                   <div className="summary-row total-row">
 
@@ -2551,6 +2867,7 @@ const searchResults = searchText.trim()
                 Delivery Details
               </h3>
 
+
               <input
                 type="text"
                 placeholder="Full Name"
@@ -2580,6 +2897,7 @@ const searchResults = searchText.trim()
               <h3 className="payment-title">
                 Payment Method
               </h3>
+
 
               <label className="payment-option">
 
@@ -2651,17 +2969,23 @@ const searchResults = searchText.trim()
 
         <div
           className="login-overlay"
-          onClick={() => setShowLogin(false)}
+          onClick={() =>
+            setShowLogin(false)
+          }
         >
 
           <div
             className="login-modal"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) =>
+              e.stopPropagation()
+            }
           >
 
             <button
               className="login-close"
-              onClick={() => setShowLogin(false)}
+              onClick={() =>
+                setShowLogin(false)
+              }
             >
               ✕
             </button>
@@ -2671,9 +2995,11 @@ const searchResults = searchText.trim()
               🌱
             </div>
 
+
             <h2>
               Welcome to GreenNest
             </h2>
+
 
             <p className="login-subtitle">
               Login to continue shopping
@@ -2685,6 +3011,7 @@ const searchResults = searchText.trim()
               <label>
                 Email Address
               </label>
+
 
               <input
                 type="email"
@@ -2699,6 +3026,7 @@ const searchResults = searchText.trim()
               <label>
                 Password
               </label>
+
 
               <input
                 type="password"
