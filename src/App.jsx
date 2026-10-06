@@ -164,7 +164,7 @@ function App() {
 
   useEffect(() => {
 
-    fetch("http://localhost:8080/products")
+    fetch("https://greennest-api-l2wj.onrender.com/api/plants")
 
       .then((response) => {
 
