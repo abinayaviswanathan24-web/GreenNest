@@ -164,7 +164,7 @@ function App() {
 
   useEffect(() => {
 
-    fetch("https://greennest-api-l2wj.onrender.com/api/plants")
+    fetch("https://greennest-api-l2wj.onrender.com/products")
 
       .then((response) => {
 
