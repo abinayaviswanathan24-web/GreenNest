@@ -1,3 +1,8 @@
+
+/* =========================
+   GLOBAL FULL-WIDTH FIX
+========================= */
+
 * {
   margin: 0;
   padding: 0;
@@ -5,13 +10,31 @@
 }
 
 html {
+  width: 100%;
+  min-height: 100%;
+  margin: 0%;
+  padding: 0%;
   scroll-behavior: smooth;
 }
 
 body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+
   font-family: Arial, Helvetica, sans-serif;
   background: #f6fbf4;
   color: #263326;
+
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 button {
@@ -52,6 +75,15 @@ a {
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.site-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  display: block;
 }
 
 .nav-links {
@@ -60,6 +92,7 @@ a {
   gap: 24px;
   margin-left: 15px;
 }
+
 
 .nav-links a {
   text-decoration: none;
@@ -819,6 +852,13 @@ a {
 
   margin: 0 auto 40px;
 }
+.site-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 15px;
+}
 
 .offers-heading > span {
   display: inline-block;
@@ -838,6 +878,13 @@ a {
   letter-spacing: 1.5px;
 
   margin-bottom: 14px;
+}
+.offers-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 15px;
 }
 
 .offers-heading h2 {
@@ -1003,6 +1050,29 @@ a {
 .offer-content button:hover {
   background: #f1f7ef;
 }
+/* Offers Section Fonts */
+
+.offers-heading {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.offers-heading span {
+  font-family: Georgia, serif;
+  font-weight: bold;
+}
+
+.offer-card h3 {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 700;
+}
+
+.offer-card p,
+.offer-card a,
+.offer-card button {
+  font-family: Arial, sans-serif;
+}
 
 
 /* =========================
@@ -1068,86 +1138,88 @@ a {
 }
 
 
-/* =========================
-   FOOTER
-========================= */
-
 .footer {
   background: #1e2d20;
-
   color: white;
-
-  padding: 60px;
-
+  padding: 50px;
   display: grid;
-
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
-
-  gap: 50px;
+  gap: 35px;
+  align-items: start;
+  font-family: "Poppins", sans-serif;
 }
 
 .footer-column {
   display: flex;
-
   flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
 
-  gap: 10px;
+.footer-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.footer-column h2,
+.footer-column h3 {
+  font-family: Georgia, serif;
+  color: #8fd18f;
+  margin: 0 0 8px;
 }
 
 .footer-column h2 {
-  color: #8fd18f;
-
-  margin-bottom: 10px;
+  font-size: 24px;
 }
 
 .footer-column h3 {
-  font-size: 16px;
-
-  margin-bottom: 8px;
+  font-size: 17px;
 }
 
-.footer-column p {
+.footer-column p,
+.footer-column a {
   color: #c1cbc1;
-
   font-size: 13px;
-
-  line-height: 1.6;
+  line-height: 1.8;
+  margin: 0;
+  font-family: "Times New Roman", sans-serif;
 }
 
-.footer-column a,
-.footer-column button {
-  color: #c1cbc1;
-
-  background: none;
-
-  border: none;
-
+.footer-column a {
   text-decoration: none;
-
-  text-align: left;
-
-  cursor: pointer;
-
-  font-size: 13px;
 }
 
-.footer-column a:hover,
-.footer-column button:hover {
-  color: white;
+.footer-column a:hover {
+  color: #8fd18f;
 }
 
 .footer-bottom {
   background: #172219;
-
   color: #9da99e;
-
   text-align: center;
-
-  padding: 18px;
-
+  padding: 15px;
   font-size: 12px;
 }
 
+.footer-bottom p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 30px 20px;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* =========================
    CART OVERLAY
@@ -2040,4 +2112,24 @@ a {
   line-height: 1.5;
 
   margin-top: 18px;
+}
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin: 15px 0 20px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
 }

@@ -267,27 +267,18 @@ function App() {
 
 
   // =========================
-  // OPEN CATEGORY
-  // =========================
+// OPEN CATEGORY
+// =========================
+const openCategory = (category) => {
+  setSelectedCategory(category);
 
-  const openCategory = (category) => {
-
-    setSelectedCategory(category)
-
-    setTimeout(() => {
-
-      document
-        .getElementById("category-products")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        })
-
-    }, 100)
-
-  }
-
-
+  setTimeout(() => {
+    document.getElementById("category-products")?.scrollIntoView({
+      behavior: "instant",
+      block: "start"
+    });
+  }, 0);
+};
   // =========================
   // PRODUCTS
   // =========================
@@ -892,13 +883,16 @@ function App() {
   ]
 
 
-  const searchResults = searchText.trim()
-    ? combinedProducts.filter((product) =>
-        product.name
-          ?.toLowerCase()
-          .includes(searchText.toLowerCase())
-      )
-    : []
+ const searchResults = searchText.trim()
+  ? combinedProducts.filter((product) =>
+      product.name
+        ?.toLowerCase()
+        .includes(searchText.trim().toLowerCase()) ||
+      product.category
+        ?.toLowerCase()
+        .includes(searchText.trim().toLowerCase())
+    )
+  : [];
 
 
   // =========================
@@ -1198,76 +1192,66 @@ function App() {
 
           }}
         >
-          🌱 GreenNest
+          <img
+  src={`${import.meta.env.BASE_URL}images/greennest.png`}
+  alt="GreenNest Logo"
+  className="site-logo"
+/>
         </div>
 
+       <nav className="nav-links">
 
-        <div className="nav-links">
+  <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      setSelectedCategory(null);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }}
+  >
+    Home
+  </a>
 
-          <a
-            href="#"
-            onClick={(e) => {
+  <a
+    href="#categories"
+    onClick={(e) => {
+      e.preventDefault();
+      document.getElementById("categories")?.scrollIntoView({
+        behavior: "instant",
+        block: "start"
+      });
+    }}
+  >
+    Plants
+  </a>
 
-              e.preventDefault()
+  <a
+    href="#offers"
+    onClick={(e) => {
+      e.preventDefault();
+      document.getElementById("offers")?.scrollIntoView({
+        behavior: "instant",
+        block: "start"
+      });
+    }}
+  >
+    Offers
+  </a>
 
-              setSelectedCategory(null)
+  <a
+    href="#contact"
+    onClick={(e) => {
+      e.preventDefault();
+      document.getElementById("contact")?.scrollIntoView({
+        behavior: "instant",
+        block: "start"
+      });
+    }}
+  >
+    Contact
+  </a>
 
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-              })
-
-            }}
-          >
-            Home
-          </a>
-
-
-          <a
-            href="#categories"
-            onClick={() =>
-              setSelectedCategory(null)
-            }
-          >
-            Plants
-          </a>
-
-
-          <a
-            href="#"
-            onClick={(e) => {
-
-              e.preventDefault()
-
-              openCategory("seeds")
-
-            }}
-          >
-            Seeds
-          </a>
-
-
-          <a
-            href="#"
-            onClick={(e) => {
-
-              e.preventDefault()
-
-              openCategory("gardenkit")
-
-            }}
-          >
-            Garden Kit
-          </a>
-
-
-          <a href="#offers">
-            Offers
-          </a>
-
-        </div>
-
-
+</nav>
         {/* SEARCH */}
 
         <div className="nav-search">
@@ -1350,7 +1334,7 @@ function App() {
         <div className="login-status-bar">
 
           <span>
-            Welcome back, <strong>{loggedInUser}</strong> 🌱
+            Welcome back, <strong>{loggedInUser}</strong> 
           </span>
 
           <button
@@ -1410,7 +1394,7 @@ function App() {
 
             <div className="no-results">
 
-              <span>🌱</span>
+              <span></span>
 
               <h3>
                 No products found
@@ -1908,17 +1892,20 @@ function App() {
       ========================= */}
 
       {selectedCategory && (
+  <section
+    className="category-products-section"
+    id="category-products"
+  >
+   <button
+  className="back-button"
+  onClick={() => setSelectedCategory(null)}
+>
+  ← Back to Categories
+</button>
 
-        <section
-          className="category-products-section"
-          id="category-products"
-        >
-
-          {renderCategoryProducts()}
-
-        </section>
-
-      )}
+    {renderCategoryProducts()}
+  </section>
+)}
 
 
       {/* =========================
@@ -2314,13 +2301,17 @@ function App() {
       >
 
         <div className="offers-heading">
-
+<img
+  src={`${import.meta.env.BASE_URL}images/greennest.png`}
+  alt="GreenNest Logo"
+  className="site-logo"
+/>
           <span>
             ✨ SPECIAL OFFERS
           </span>
 
           <h2>
-            Grow More, Save More 🌱
+            Grow More, Save More 
           </h2>
 
           <p>
@@ -2503,117 +2494,90 @@ function App() {
           FOOTER
       ========================= */}
 
-      <footer className="footer">
+     <footer className="footer">
+  <div className="footer-column" id="contact">
+    <img
+      src={`${import.meta.env.BASE_URL}images/greennest.png`}
+      alt="GreenNest Logo"
+      className="footer-logo"
+    />
+    <h2>GreenNest</h2>
+    <h4>
+      Bring nature closer to home with beautiful plants
+      and gardening essentials.
+    </h4>
+  </div>
 
-        <div className="footer-column">
+  <div className="footer-column">
+  <h3>Quick Links</h3>
 
-          <h2>
-            🌱 GreenNest
-          </h2>
+  <a href="#" onClick={(e) => {
+    e.preventDefault();
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }}>Home</a>
 
-          <p>
-            Bring nature into your home with beautiful
-            plants and gardening essentials.
-          </p>
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    setSelectedCategory(null);
+    document.getElementById("categories")?.scrollIntoView({ behavior: "instant" });
+  }}>Plants</a>
 
-        </div>
+  <a href="#offers" onClick={(e) => {
+    e.preventDefault();
+    setSelectedCategory(null);
+    document.getElementById("offers")?.scrollIntoView({ behavior: "instant" });
+  }}>Offers</a>
 
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    setSelectedCategory(null);
+    document.getElementById("categories")?.scrollIntoView({ behavior: "instant" });
+  }}>Garden Kit</a>
+</div>
 
-        <div className="footer-column">
+  <div className="footer-column">
+  <h3>Categories</h3>
 
-          <h3>
-            Quick Links
-          </h3>
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    openCategory("flowers");
+  }}>Flower Plants</a>
 
-          <a href="#">
-            Home
-          </a>
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    openCategory("vegetables");
+  }}>Vegetable Plants</a>
 
-          <a href="#categories">
-            Plants
-          </a>
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    openCategory("fruits");
+  }}>Fruit Plants</a>
 
-          <a href="#offers">
-            Offers
-          </a>
+  <a href="#categories" onClick={(e) => {
+    e.preventDefault();
+    openCategory("seeds");
+  }}>Seeds</a>
+</div>
 
-          <a href="#categories">
-            Garden Kit
-          </a>
+  <div className="footer-column">
+   <div className="footer-column">
+  <h3>Contact Us</h3>
 
-        </div>
+  <p>📞 Phone: +91 98765 98765</p>
 
+  <p>📧 Email: greennest@gmail.com</p>
+  
+  <p>📍 Location: Chennai, Tamil Nadu, India</p>
+  
+  <p>🌿 Grow Green, Live Green!</p>
+</div>
+  </div>
+</footer>
 
-        <div className="footer-column">
-
-          <h3>
-            Categories
-          </h3>
-
-          <button
-            onClick={() =>
-              openCategory("flowers")
-            }
-          >
-            Flower Plants
-          </button>
-
-          <button
-            onClick={() =>
-              openCategory("vegetables")
-            }
-          >
-            Vegetable Plants
-          </button>
-
-          <button
-            onClick={() =>
-              openCategory("fruits")
-            }
-          >
-            Fruit Plants
-          </button>
-
-          <button
-            onClick={() =>
-              openCategory("seeds")
-            }
-          >
-            Seeds
-          </button>
-
-        </div>
-
-
-        <div className="footer-column">
-
-          <h3>
-            Contact
-          </h3>
-
-          <p>
-            📍 Chennai, Tamil Nadu
-          </p>
-
-          <p>
-            📧 greennest@example.com
-          </p>
-
-          <p>
-            🚚 Delivery Across India
-          </p>
-
-        </div>
-
-      </footer>
-
-
-      <div className="footer-bottom">
-
-        © 2026 GreenNest. All Rights Reserved.
-
-      </div>
-
+<div className="footer-bottom">
+  <p>© 2026 GreenNest. All rights reserved.</p>
+</div>
 
       {/* =========================
           CART OVERLAY
@@ -3088,7 +3052,7 @@ function App() {
             </h3>
 
             <p>
-              Thank you for shopping with GreenNest 🌱
+              Thank you for shopping with GreenNest 
             </p>
 
           </div>
